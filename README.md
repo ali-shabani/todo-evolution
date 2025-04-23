@@ -1,14 +1,26 @@
-# TODO-Evolution
+# Todo App
 
-Todo-Evolutin is a simple Web Application that lets you add/remove tasks into your tasks list.
+A simple, clean todo application built with vanilla JavaScript, HTML, and CSS.
 
-## Project Goals
+## Features
 
--Create a simple TODO web application using HTML, CSS and Javascript.
+- Create new todos
+- Edit existing todos
+- Delete todos
+- Mark todos as complete/incomplete
+- Todos persist via localStorage
 
-## Project Features
+## Usage
 
-### Core Features
+1. Simply open `index.html` in your browser
+2. Add a new todo by typing in the input field and clicking "Add" (or pressing Enter)
+3. Click on a todo to mark it as complete/incomplete
+4. Use the Edit button to modify a todo
+5. Use the Delete button to remove a todo
 
-- Create new todo items
-- Delete existing todos
+## Implementation Details
+
+- Pure vanilla JavaScript - no frameworks or libraries
+- Responsive design with CSS
+- Data persistence using localStorage
+- Dynamic DOM manipulation
