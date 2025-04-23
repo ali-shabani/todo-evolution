@@ -4,3 +4,8 @@
   margin: 0 auto;
   text-align: center;
 }
+
+#error_text {
+  color: red;
+  font-weight: bold;
+}
