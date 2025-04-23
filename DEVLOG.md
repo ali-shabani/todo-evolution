@@ -1,0 +1,2 @@
+- it took 20 minutes to implement a working to do app without remove functionality.
+- it took 28 minutes to fully implement to TODO.md tasks .
