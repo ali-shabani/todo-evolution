@@ -4,7 +4,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const todoList = document.getElementById("todoList");
 
   // Load todos from localStorage
-  let todos = JSON.parse(localStorage.getItem("todos")) || [];
+  let todos = [];
+  try {
+    todos = JSON.parse(localStorage.getItem("todos")) || [];
+  } catch (e) {
+    console.error("Error loading from localStorage", e);
+  }
 
   // Render todos initially
   renderTodos();
@@ -21,7 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function addTodo() {
     const todoText = todoInput.value.trim();
 
-    if (todoText === "") return;
+    if (todoText === "") {
+      alert("Please enter a task.");
+      return;
+    }
 
     const todo = {
       id: Date.now(),
@@ -69,16 +77,19 @@ document.addEventListener("DOMContentLoaded", () => {
     editInput.type = "text";
     editInput.value = currentText;
     editInput.className = "edit-input";
+    editInput.setAttribute("aria-label", "Edit todo item");
 
     // Create save button
     const saveBtn = document.createElement("button");
     saveBtn.textContent = "Save";
     saveBtn.className = "save-btn";
+    saveBtn.setAttribute("aria-label", "Save changes");
 
     // Create cancel button
     const cancelBtn = document.createElement("button");
     cancelBtn.textContent = "Cancel";
     cancelBtn.className = "cancel-btn";
+    cancelBtn.setAttribute("aria-label", "Cancel editing");
 
     // Clear existing content
     todoText.textContent = "";
@@ -117,7 +128,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to save edited todo
   function saveTodoEdit(id, newText) {
-    if (newText === "") return;
+    if (newText === "") {
+      alert("Task cannot be empty.");
+      return;
+    }
 
     todos = todos.map((todo) => {
       if (todo.id === id) {
@@ -137,7 +151,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Function to save todos to localStorage
   function saveTodos() {
-    localStorage.setItem("todos", JSON.stringify(todos));
+    try {
+      localStorage.setItem("todos", JSON.stringify(todos));
+    } catch (e) {
+      console.error("Error saving to localStorage", e);
+      alert("Failed to save your tasks. Storage may be full or unavailable.");
+    }
   }
 
   // Function to render todos
@@ -152,6 +171,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const todoText = document.createElement("span");
       todoText.className = "todo-text" + (todo.completed ? " completed" : "");
       todoText.textContent = todo.text;
+      todoText.setAttribute(
+        "aria-label",
+        todo.text + ", mark as " + (todo.completed ? "incomplete" : "complete")
+      );
+      todoText.setAttribute("role", "checkbox");
+      todoText.setAttribute("aria-checked", todo.completed ? "true" : "false");
+      todoText.setAttribute("tabindex", "0");
 
       todoText.addEventListener("click", () => {
         toggleCompleted(todo.id);
@@ -163,6 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const editBtn = document.createElement("button");
       editBtn.className = "edit-btn";
       editBtn.textContent = "Edit";
+      editBtn.setAttribute("aria-label", "Edit " + todo.text);
       editBtn.addEventListener("click", () => {
         editTodo(todo.id);
       });
@@ -170,6 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const deleteBtn = document.createElement("button");
       deleteBtn.className = "delete-btn";
       deleteBtn.textContent = "Delete";
+      deleteBtn.setAttribute("aria-label", "Delete " + todo.text);
       deleteBtn.addEventListener("click", () => {
         deleteTodo(todo.id);
       });
