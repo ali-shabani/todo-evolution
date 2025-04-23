@@ -1,0 +1,11 @@
+#container_tasks {
+  width: 300px;
+  min-height: 200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#error_text {
+  color: red;
+  font-weight: bold;
+}
