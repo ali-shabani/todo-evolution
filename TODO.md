@@ -3,5 +3,5 @@
 [x] submit button
 [x] remove button
 [x] store tasks in memory
-[] error handling
-[] refactor to clean code
+[x] error handling
+[x] refactor to clean code
