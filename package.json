@@ -6,6 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
+    "buildpages": "vite build --base=/todo-evolution/",
     "build": "vite build",
     "preview": "vite preview"
   },
