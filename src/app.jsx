@@ -1,5 +1,6 @@
 import { useState } from "react";
 import React from "react";
+import "./app.css";
 
 function App() {
   const [tasks, setTasks] = useState([]);
