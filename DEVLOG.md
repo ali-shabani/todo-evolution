@@ -8,3 +8,4 @@
   -alert dialogue for removing task
   -refactor code and cleaning
   -input validation
+  -it took 90 minutes to refactor from vanilla js to react. we are now using vite as our build tool.
