@@ -2,6 +2,7 @@ import { useState } from "react";
 import React from "react";
 import "./app.css";
 import { TaskList } from "./components/taskList";
+import { useDebounce } from "./hooks/hooks";
 
 // Sample tasks data
 const initialTasks = [
@@ -15,7 +16,15 @@ const initialTasks = [
 function App() {
   const [tasks, setTasks] = useState(initialTasks);
   const [errorMessage, setErrorMessage] = useState<string>("");
-
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const filteredTasks = React.useMemo(
+    () =>
+      tasks.filter((task) =>
+        task.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      ),
+    [tasks, debouncedSearchQuery]
+  );
   function isTaskInputValid(taskText: string): boolean {
     return taskText.trim().length > 0;
   }
@@ -79,14 +88,20 @@ function App() {
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Tasks</h1>
         <div className="relative w-72">
+          <label htmlFor="search_input" className="sr-only">
+            Search tasks
+          </label>
           <input
+            id="search_input"
             type="search"
             placeholder="Search tasks..."
             className="w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchQuery}
           />
         </div>
       </div>
-      <TaskList tasks={tasks} onDelete={handleRemoveTask} />
+      <TaskList tasks={filteredTasks} onDelete={handleRemoveTask} />
     </div>
   );
 }
