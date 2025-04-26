@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
@@ -15,12 +16,25 @@
   "license": "ISC",
   "packageManager": "pnpm@10.5.1",
   "devDependencies": {
+    "@types/node": "^22.15.2",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react": "^4.4.1",
     "live-server": "^1.2.2",
+    "tw-animate-css": "^1.2.8",
+    "typescript": "^5.8.3",
     "vite": "^6.3.3"
   },
   "dependencies": {
+    "@radix-ui/react-checkbox": "^1.2.3",
+    "@radix-ui/react-slot": "^1.2.0",
+    "@tailwindcss/vite": "^4.1.4",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.503.0",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "tailwind-merge": "^3.2.0",
+    "tailwindcss": "^4.1.4"
   }
 }
