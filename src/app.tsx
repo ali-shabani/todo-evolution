@@ -53,12 +53,7 @@ function App() {
 
   function handleRemoveTask(id: string): void {
     const taskToRemove = tasks.find((task) => task.id === id);
-    if (
-      taskToRemove &&
-      confirm(
-        `Are you sure you want to remove the task: "${taskToRemove.title}"?`
-      )
-    ) {
+    if (taskToRemove) {
       setTasks(tasks.filter((task) => task.id !== id));
     }
   }
