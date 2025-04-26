@@ -2,6 +2,7 @@ import { useState } from "react";
 import React from "react";
 import "./app.css";
 import { TaskList } from "./components/taskList";
+import { useDebounce } from "./hooks/hooks";
 
 // Sample tasks data
 const initialTasks = [
@@ -15,10 +16,19 @@ const initialTasks = [
 function App() {
   const [tasks, setTasks] = useState(initialTasks);
   const [errorMessage, setErrorMessage] = useState<string>("");
-
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+  const filteredTasks = tasks.filter((task) =>
+    task.title.toLowerCase().includes(debouncedSearchQuery)
+  );
   function isTaskInputValid(taskText: string): boolean {
     return taskText.trim().length > 0;
   }
+
+  // function handleSearch(event: React.ChangeEvent<HTMLInputElement>): void {
+  //   const searchQuery = event.target.value.toLowerCase();
+  //   setSearchQuery(searchQuery);
+  // }
 
   function handleSubmitTask(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
@@ -83,10 +93,12 @@ function App() {
             type="search"
             placeholder="Search tasks..."
             className="w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+            onChange={(e) => setSearchQuery(e.target.value)}
+            value={searchQuery}
           />
         </div>
       </div>
-      <TaskList tasks={tasks} onDelete={handleRemoveTask} />
+      <TaskList tasks={filteredTasks} onDelete={handleRemoveTask} />
     </div>
   );
 }
