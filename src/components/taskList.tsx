@@ -18,7 +18,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   tasks,
   onDelete,
 }: TaskListProps) => {
-  return (
+  return tasks.length > 0 ? (
     <div className="space-y-4">
       {tasks.map((task) => (
         <Card key={task.id} className="shadow-sm">
@@ -48,6 +48,10 @@ export const TaskList: React.FC<TaskListProps> = ({
           </CardContent>
         </Card>
       ))}
+    </div>
+  ) : (
+    <div className="flex items-center justify-center h-full mt-10">
+      <p className="text-muted-foreground">No tasks found!</p>
     </div>
   );
 };

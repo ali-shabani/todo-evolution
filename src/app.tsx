@@ -18,17 +18,16 @@ function App() {
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
   const debouncedSearchQuery = useDebounce(searchQuery, 500);
-  const filteredTasks = tasks.filter((task) =>
-    task.title.toLowerCase().includes(debouncedSearchQuery)
+  const filteredTasks = React.useMemo(
+    () =>
+      tasks.filter((task) =>
+        task.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
+      ),
+    [tasks, debouncedSearchQuery]
   );
   function isTaskInputValid(taskText: string): boolean {
     return taskText.trim().length > 0;
   }
-
-  // function handleSearch(event: React.ChangeEvent<HTMLInputElement>): void {
-  //   const searchQuery = event.target.value.toLowerCase();
-  //   setSearchQuery(searchQuery);
-  // }
 
   function handleSubmitTask(event: React.FormEvent<HTMLFormElement>): void {
     event.preventDefault();
