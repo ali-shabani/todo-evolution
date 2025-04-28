@@ -13,7 +13,7 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 
-interface Task {
+export interface Task {
   id: string;
   title: string;
   completed: boolean;
