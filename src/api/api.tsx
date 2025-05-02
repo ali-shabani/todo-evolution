@@ -1,36 +1,72 @@
 //Mock API
 //TODO: Refactor this stupuid shit type imports
-import { Task } from "@/components/taskList";
+import { Task } from "@/models/task";
 
-const tasks: Task[] = [
-  { id: "1", title: "Complete project documentation", completed: false },
-  { id: "2", title: "Review pull requests", completed: true },
-  { id: "3", title: "Update dependencies", completed: false },
-  { id: "4", title: "Write unit tests", completed: false },
-  { id: "5", title: "Deploy to production", completed: false },
+let tasks: Task[] = [
+  {
+    id: "1",
+    title: "Complete project documentation",
+    completed: false,
+    syncStatus: "synced",
+  },
+  {
+    id: "2",
+    title: "Review pull requests",
+    completed: true,
+    syncStatus: "synced",
+  },
+  {
+    id: "3",
+    title: "Update dependencies",
+    completed: false,
+    syncStatus: "synced",
+  },
+  {
+    id: "4",
+    title: "Write unit tests",
+    completed: false,
+    syncStatus: "synced",
+  },
+  {
+    id: "5",
+    title: "Deploy to production",
+    completed: false,
+    syncStatus: "synced",
+  },
 ];
-function getTasks() {
+let shoudErrorCount = 1;
+export function getTasks(): Promise<Task[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(tasks);
+      console.log("tasks fetched", tasks);
+      resolve([...tasks]);
     }, 1000);
   });
 }
 
-function addTask(task: Task) {
+export function addTask(task: Task): Promise<Task> {
+  if (task.title === "salam" && shoudErrorCount > 0) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        shoudErrorCount--;
+        reject(new Error("Task title cannot be 'salam'"));
+      }, 1000);
+    });
+  }
   return new Promise((resolve) => {
     setTimeout(() => {
+      tasks.push(task);
+      console.log("tasks updated", tasks);
       resolve(task);
     }, 1000);
   });
 }
 
-function deleteTask(id: string) {
+export function deleteTask(id: string): Promise<string> {
   return new Promise((resolve) => {
     setTimeout(() => {
+      tasks = tasks.filter((task) => task.id !== id);
       resolve(id);
     }, 1000);
   });
 }
-
-export default { getTasks, addTask, deleteTask };
