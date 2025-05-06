@@ -44,7 +44,7 @@ export function useAddTask() {
       queryClient.setQueryData<Task[]>(["tasks"], (oldTasks) => {
         //Todo i dont how to handle this yet and im not sure if this will cause a bug ! :D
         if (!oldTasks) {
-          return;
+          return [task];
         }
         //check if task is in optimistic cache
         const reSyncedTask = oldTasks?.find((t) => t.id === task.id);

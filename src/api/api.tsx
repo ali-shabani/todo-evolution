@@ -1,8 +1,15 @@
 //Mock API
-//TODO: Refactor this stupuid shit type imports
+//TODO: Refactor type imports from models to be more explicit and avoid circular dependencies.
 import { Task } from "@/models/task";
 
 const LOG_PREFIX = "api";
+
+type DisallowedTask = {
+  title: string;
+  count: number;
+};
+
+const DISALLOWED_TASKS: DisallowedTask[] = [{ title: "salam", count: 1 }];
 
 let tasks: Task[] = [
   {
@@ -47,11 +54,17 @@ export function getTasks(): Promise<Task[]> {
 }
 
 export function addTask(task: Task): Promise<Task> {
-  if (task.title === "salam" && shoudErrorCount > 0) {
+  const disallowedTask = DISALLOWED_TASKS.find(
+    (t) => t.title === task.title && t.count > 0
+  );
+  if (disallowedTask) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        shoudErrorCount--;
-        reject(new Error("Task title cannot be 'salam'"));
+        disallowedTask.count--;
+        reject(new Error(`Task title '${task.title}' is disallowed`));
+        console.log(
+          `${LOG_PREFIX} : task rejected with error: Task title '${task.title}' is disallowed`
+        );
       }, 1000);
     });
   }
