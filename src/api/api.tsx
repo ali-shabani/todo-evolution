@@ -2,6 +2,8 @@
 //TODO: Refactor this stupuid shit type imports
 import { Task } from "@/models/task";
 
+const LOG_PREFIX = "api";
+
 let tasks: Task[] = [
   {
     id: "1",
@@ -38,7 +40,7 @@ let shoudErrorCount = 1;
 export function getTasks(): Promise<Task[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
-      console.log("tasks fetched", tasks);
+      console.log(`${LOG_PREFIX} : tasks fetched.`, tasks);
       resolve([...tasks]);
     }, 1000);
   });
@@ -56,9 +58,9 @@ export function addTask(task: Task): Promise<Task> {
   return new Promise((resolve) => {
     setTimeout(() => {
       tasks.push(task);
-      console.log("tasks updated", tasks);
+      console.log(`${LOG_PREFIX} : tasks updated.`, tasks);
       resolve(task);
-    }, 5000);
+    }, 1000);
   });
 }
 
@@ -66,6 +68,7 @@ export function deleteTask(id: string): Promise<string> {
   return new Promise((resolve) => {
     setTimeout(() => {
       tasks = tasks.filter((task) => task.id !== id);
+      console.log(`${LOG_PREFIX} : task deleted.`, id);
       resolve(id);
     }, 1000);
   });
@@ -75,7 +78,7 @@ export function updateTask(task: Task): Promise<Task> {
   return new Promise((resolve) => {
     setTimeout(() => {
       tasks = tasks.map((t) => (t.id === task.id ? task : t));
-      console.log("tasks updated", task);
+      console.log(`${LOG_PREFIX} : task updated.task id: ${task.id}`);
       resolve(task);
     }, 1000);
   });
