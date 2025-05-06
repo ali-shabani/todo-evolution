@@ -58,7 +58,7 @@ export function addTask(task: Task): Promise<Task> {
       tasks.push(task);
       console.log("tasks updated", tasks);
       resolve(task);
-    }, 1000);
+    }, 5000);
   });
 }
 
@@ -67,6 +67,16 @@ export function deleteTask(id: string): Promise<string> {
     setTimeout(() => {
       tasks = tasks.filter((task) => task.id !== id);
       resolve(id);
+    }, 1000);
+  });
+}
+
+export function updateTask(task: Task): Promise<Task> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      tasks = tasks.map((t) => (t.id === task.id ? task : t));
+      console.log("tasks updated", task);
+      resolve(task);
     }, 1000);
   });
 }

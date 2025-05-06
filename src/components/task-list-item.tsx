@@ -25,12 +25,14 @@ interface TaskItemProps {
   task: Task;
   onDelete?: (id: string) => void;
   onResync: (task: Task) => void;
+  onUpdate: (task: Task) => void;
 }
 
 export const TaskListItem: React.FC<TaskItemProps> = ({
   task,
   onDelete,
   onResync,
+  onUpdate,
 }) => {
   return (
     <Card className="shadow-sm">
@@ -40,6 +42,9 @@ export const TaskListItem: React.FC<TaskItemProps> = ({
             id={task.id}
             checked={task.completed}
             className="h-5 w-5 rounded-full"
+            onCheckedChange={(checked) => {
+              onUpdate({ ...task, completed: checked === true });
+            }}
           />
           <span
             className={`${

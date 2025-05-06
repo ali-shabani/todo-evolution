@@ -5,12 +5,14 @@ interface TaskListProps {
   tasks: Task[];
   onDelete?: (id: string) => void;
   onResync: (task: Task) => void;
+  onUpdate: (task: Task) => void;
 }
 
 export const TaskList: React.FC<TaskListProps> = ({
   tasks,
   onDelete,
   onResync,
+  onUpdate,
 }: TaskListProps) => {
   return tasks.length > 0 ? (
     <div className="space-y-4">
@@ -20,6 +22,7 @@ export const TaskList: React.FC<TaskListProps> = ({
           task={task}
           onDelete={onDelete}
           onResync={onResync}
+          onUpdate={onUpdate}
         />
       ))}
     </div>

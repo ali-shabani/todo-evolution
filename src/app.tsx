@@ -5,6 +5,8 @@ import { TaskList } from "./components/taskList";
 import { Toaster } from "@/components/ui/sonner";
 import { Task } from "@/models/task";
 import { useTasks, useAddTask } from "./hooks/use-tasks";
+import { useUpdateTask } from "./hooks/use-update-tasks";
+
 // Sample tasks data
 
 function App() {
@@ -13,7 +15,7 @@ function App() {
   const { mutate: addTask } = useAddTask();
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [removedTask, setRemovedTask] = useState<Task | undefined>(undefined);
-
+  const { mutate: updateTask } = useUpdateTask();
   function isTaskInputValid(taskText: string | undefined): taskText is string {
     if (!taskText) return false;
     return taskText.trim().length > 0;
@@ -56,6 +58,17 @@ function App() {
 
   function handleResyncTask(task: Task): void {
     addTask(task);
+  }
+
+  function handleUpdateTask(task: Task): void {
+    console.log("onUpdate task ", task);
+    if (task.syncStatus === "error") {
+      addTask(task);
+    } else if (task.syncStatus === "pending") {
+      //do nothing
+    } else {
+      updateTask(task);
+    }
   }
 
   if (isLoading) return <div>Loading...</div>;
@@ -104,6 +117,7 @@ function App() {
           tasks={tasks}
           onDelete={handleRemoveTask}
           onResync={handleResyncTask}
+          onUpdate={handleUpdateTask}
         />
       </div>
       <Toaster />
