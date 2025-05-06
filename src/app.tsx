@@ -2,86 +2,87 @@ import { useRef, useState } from "react";
 import React from "react";
 import "./app.css";
 import { TaskList } from "./components/taskList";
-import { useDebounce } from "./hooks/hooks";
 import { Toaster } from "@/components/ui/sonner";
-import { toast } from "sonner";
-import { Task } from "./components/taskList";
+import { Task } from "@/models/task";
+import { useTasks, useAddTask } from "./hooks/use-tasks";
+import { useUpdateTask } from "./hooks/use-update-tasks";
+
 // Sample tasks data
-const initialTasks: Task[] = [
-  { id: "1", title: "Complete project documentation", completed: false },
-  { id: "2", title: "Review pull requests", completed: true },
-  { id: "3", title: "Update dependencies", completed: false },
-  { id: "4", title: "Write unit tests", completed: false },
-  { id: "5", title: "Deploy to production", completed: false },
-];
 
 function App() {
-  const taskInputRef = useRef<HTMLInputElement>(null);
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const formRef = useRef<HTMLFormElement>(null);
+  const { tasks, isLoading, isError, setFilterQuery, filterQuery } = useTasks();
+  const { mutate: addTask } = useAddTask();
   const [errorMessage, setErrorMessage] = useState<string>("");
-  const [searchQuery, setSearchQuery] = useState<string>("");
   const [removedTask, setRemovedTask] = useState<Task | undefined>(undefined);
-  const debouncedSearchQuery = useDebounce(searchQuery, 500);
-  const filteredTasks = React.useMemo(
-    () =>
-      tasks.filter((task) =>
-        task.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-      ),
-    [tasks, debouncedSearchQuery]
-  );
+  const { mutate: updateTask } = useUpdateTask();
   function isTaskInputValid(taskText: string | undefined): taskText is string {
     if (!taskText) return false;
     return taskText.trim().length > 0;
   }
-
-  function handleSubmitTask(event: React.FormEvent<HTMLFormElement>): void {
-    event.preventDefault();
-    const form = event.target as HTMLFormElement;
-    const newTask = taskInputRef.current?.value;
+  function handleSubmitTask(formData: FormData): void {
+    const newTask = formData.get("taskInput")?.valueOf() as string;
 
     if (!isTaskInputValid(newTask)) {
       setErrorMessage("input should not be empty!");
       return;
     }
 
-    const newTaskObj = {
+    const newTaskObj: Task = {
       id: Date.now().toString(),
       title: newTask,
       completed: false,
+      syncStatus: "pending",
     };
-
-    setTasks((prevTasks) => [...prevTasks, newTaskObj]);
+    addTask(newTaskObj);
     setErrorMessage("");
-    form.reset();
+    // formRef.current?.reset();
   }
 
   function handleRemoveTask(id: string): void {
-    const taskToRemove = tasks.find((task) => task.id === id);
-    if (taskToRemove) {
-      setRemovedTask(taskToRemove);
-      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
-      toast.success("Task removed successfully", {
-        action: {
-          label: "Undo",
-          onClick: () => {
-            setTasks((prevTasks) => [...prevTasks, taskToRemove]);
-            setRemovedTask(undefined);
-          },
-        },
-      });
+    // const taskToRemove = tasks.find((task) => task.id === id);
+    // if (taskToRemove) {
+    //   setRemovedTask(taskToRemove);
+    //   //setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+    //   toast.success("Task removed successfully", {
+    //     action: {
+    //       label: "Undo",
+    //       onClick: () => {
+    //         //setTasks((prevTasks) => [...prevTasks, taskToRemove]);
+    //         setRemovedTask(undefined);
+    //       },
+    //     },
+    //   });
+    // }
+  }
+
+  function handleResyncTask(task: Task): void {
+    addTask(task);
+  }
+
+  function handleUpdateTask(task: Task): void {
+    console.log("onUpdate task ", task);
+    if (task.syncStatus === "error") {
+      addTask(task);
+    } else if (task.syncStatus === "pending") {
+      //do nothing
+    } else {
+      updateTask(task);
     }
   }
 
+  if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div>Error fetching tasks</div>;
+  if (!tasks) return <div>No tasks found</div>;
   return (
     <>
       <div className="container mx-auto p-4" id="container_tasks">
-        <form onSubmit={handleSubmitTask} className="mb-6">
+        <form action={handleSubmitTask} ref={formRef} className="mb-6">
           <input
             id="task_input"
             name="taskInput"
             type="text"
             className="border p-2 rounded-md mr-2"
-            ref={taskInputRef}
           />
           <button
             className="bg-blue-500 text-white p-2 rounded-md"
@@ -107,12 +108,17 @@ function App() {
               type="search"
               placeholder="Search tasks..."
               className="w-full h-9 rounded-md border border-input bg-background px-3 py-1 text-sm shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-              onChange={(e) => setSearchQuery(e.target.value)}
-              value={searchQuery}
+              onChange={(e) => setFilterQuery(e.target.value)}
+              value={filterQuery}
             />
           </div>
         </div>
-        <TaskList tasks={filteredTasks} onDelete={handleRemoveTask} />
+        <TaskList
+          tasks={tasks}
+          onDelete={handleRemoveTask}
+          onResync={handleResyncTask}
+          onUpdate={handleUpdateTask}
+        />
       </div>
       <Toaster />
     </>
